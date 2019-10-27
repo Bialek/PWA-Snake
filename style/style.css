@@ -1,0 +1,68 @@
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.snake {
+  padding-top: 100px;
+}
+
+.snake__container {
+  max-width: 1200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  margin: 0 auto;
+}
+
+.snake__playground {
+  margin: 0 auto;
+  border: 3px solid #000;
+  display: -ms-inline-grid;
+  display: inline-grid;
+  -ms-grid-columns: (20px)[20];
+      grid-template-columns: repeat(20, 20px);
+  -ms-grid-rows: (20px)[20];
+      grid-template-rows: repeat(20, 20px);
+  background-image: radial-gradient(circle, #01a438, #049b32, #06932b, #078a25, #07821f, #047d21, #017723, #007224, #006e2b, #006931, #006535, #036039);
+}
+
+.snake__box {
+  border: 1px solid #ccc;
+}
+
+.snake__figure {
+  border: unset;
+  background-image: radial-gradient(circle, #413b01, #444201, #474901, #495001, #4a5702, #4a5902, #4b5c03, #4b5e03, #4b5b03, #4b5903, #4a5603, #4a5403);
+}
+
+.settings__input {
+  text-align: right;
+  position: relative;
+  line-height: 40px;
+  margin-bottom: 20px;
+}
+
+.settings__input:before {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 0;
+  border: 2px dotted #000;
+}
+
+.settings__input--medium:before {
+  border-top-style: solid;
+  border-bottom: solid;
+}
+
+.settings__input--hard:before {
+  border-style: solid;
+}
+/*# sourceMappingURL=style.css.map */

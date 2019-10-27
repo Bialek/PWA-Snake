@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="author" content="Rafał Białek" />
+    <title>Snake</title>
+    <link rel="stylesheet" href="./style/style.css" />
+  </head>
+  <body>
+    <div class="snake">
+      <div class="snake__container">
+        <div class="settings">
+          <div class="settings__playground-size">
+            <h4>Playground Size</h4>
+            <select class="settings__playground-size-select">
+              <option value="10">10x10</option>
+              <option value="20">20x20</option>
+              <option value="30">30x30</option>
+              <option value="40">40x40</option>
+              <option value="50">50x50</option>
+            </select>
+          </div>
+          <div class="settings__game-difficulty">
+            <h4>Difficulty level</h4>
+            <div class="settings__input">
+              Easy
+              <input type="radio" name="difficulty" value="1" />
+            </div>
+            <div class="settings__input settings__input--medium">
+              Medium
+              <input type="radio" name="difficulty" value="2" />
+            </div>
+            <div class="settings__input settings__input--hard">
+              Hard
+              <input type="radio" name="difficulty" value="3" />
+            </div>
+          </div>
+        </div>
+        <div class="snake__playground"></div>
+      </div>
+    </div>
+    <script src="./script/snake.js"></script>
+  </body>
+</html>

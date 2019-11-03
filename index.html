@@ -26,7 +26,7 @@
             <h4>Difficulty level</h4>
             <div class="settings__input">
               Easy
-              <input type="radio" name="difficulty" value="1" />
+              <input type="radio" name="difficulty" value="1" checked />
             </div>
             <div class="settings__input settings__input--medium">
               Medium
@@ -37,8 +37,9 @@
               <input type="radio" name="difficulty" value="3" />
             </div>
           </div>
+          <button class="settings__btn">Start game</button>
         </div>
-        <div class="snake__playground"></div>
+        <div class="snake__playground snake__playground--hidden"></div>
       </div>
     </div>
     <script src="./script/snake.js"></script>

@@ -1,25 +1,19 @@
 const playGround = document.querySelector('.snake__playground');
-const difficult = document.querySelector('input[name=difficulty]:checked')
-  .value;
-const playGroundSize = document.querySelector(
-  '.settings__playground-size-select'
-).value;
-console.log(difficult);
-console.log(playGroundSize);
+const settings = document.querySelector('.settings');
 
-const basicDirectors = {
-  up: -20,
+let basicDirectors = {
+  up: 0,
   left: -1,
-  down: 20,
+  down: 0,
   right: 1,
 };
 
 let actualDirectors = basicDirectors.left;
 
-const START_POSITION = 190;
 const START_SNAKE_LENGHT = 4;
 
 let snakePosition = [];
+let playgroundBorderPositions = [];
 
 function addSnakeClassToElement(elementId) {
   const snakeElement = document.getElementById(elementId);
@@ -31,21 +25,34 @@ function removeSnakeClassToElement(elementId) {
   snakeElement.classList.remove('snake__figure');
 }
 
-function generateSnake() {
+function generateSnake(position) {
   for (let i = 0; i <= START_SNAKE_LENGHT; i++) {
-    addSnakeClassToElement(START_POSITION + i);
-    snakePosition = [...snakePosition, START_POSITION + i];
+    addSnakeClassToElement(position + i);
+    snakePosition = [...snakePosition, position + i];
   }
 }
 
-function generatePlayground() {
-  for (let i = 1; i <= 400; i++) {
+function generatePlayground(size) {
+  const playGroundSize = size * size;
+  for (let i = 1; i <= playGroundSize; i++) {
+    let lastIterationChar = `${i}`.slice(-1);
+    //pushing first ten, last ten and
+    //every id number that last character is 0 or 1 to array to get
+    //borders positions ids
+    if (
+      i <= size ||
+      i > playGroundSize - size ||
+      lastIterationChar === '1' ||
+      lastIterationChar === '0'
+    ) {
+      playgroundBorderPositions = [...playgroundBorderPositions, i];
+    }
     playGround.insertAdjacentHTML(
       'beforeend',
       `<div id=${i} class="snake__box">`
     );
   }
-  generateSnake();
+  generateSnake(playGroundSize / 2 - size / 2);
 }
 
 function moving(direct) {
@@ -134,7 +141,54 @@ function detectKey(event) {
   }
 }
 
-const autoMove = setInterval(() => moving(actualDirectors), 1000);
+const startBtn = document.querySelector('.settings__btn');
 
-document.addEventListener('load', generatePlayground());
-document.addEventListener('keypress', detectKey, false);
+startBtn.addEventListener('click', startGame);
+
+function startGame() {
+  settings.classList.add('settings--hidden');
+
+  playGround.innerHTML = '';
+  const difficult = document.querySelector('input[name=difficulty]:checked')
+    .value;
+  const playGroundSize = document.querySelector(
+    '.settings__playground-size-select'
+  ).value;
+  basicDirectors = {
+    ...basicDirectors,
+    up: -playGroundSize,
+    down: +playGroundSize,
+  };
+
+  const style = document.documentElement.style;
+  style.setProperty('--rowNum', playGroundSize);
+  style.setProperty('--colNum', playGroundSize);
+
+  generatePlayground(playGroundSize);
+  console.log(playgroundBorderPositions);
+
+  playGround.classList.remove('snake__playground--hidden');
+
+  if (difficult == 2) {
+    playGround.classList.add('snake__playground--medium');
+  }
+  if (difficult == 3) {
+    playGround.classList.add('snake__playground--hard');
+  }
+  document.addEventListener('keypress', detectKey);
+  const autoMove = setInterval(() => moving(actualDirectors), 1000);
+  return autoMove;
+}
+
+function endGame() {
+  alert('Game Over!');
+  playGround.classList.remove(
+    'snake__playground--medium',
+    'snake__playground--hard'
+  );
+  playGround.classList.add('snake__playground--hidden');
+
+  clearInterval(autoMove);
+  document.removeEventListener('keypress', detectKey);
+  settings.classList.remove('settings--hidden');
+}

@@ -1,35 +1,60 @@
+:root {
+  --rowNum: 10;
+  --colNum: 10;
+}
+
 * {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+}
+
 .snake {
-  padding-top: 100px;
+  min-height: 100vh;
+  background: #f0f0f0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 20px;
 }
 
 .snake__container {
-  max-width: 1200px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -ms-flex-line-pack: center;
-      align-content: center;
-  margin: 0 auto;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 .snake__playground {
+  height: 100%;
   margin: 0 auto;
-  border: 3px solid #000;
   display: -ms-inline-grid;
   display: inline-grid;
-  -ms-grid-columns: (20px)[20];
-      grid-template-columns: repeat(20, 20px);
-  -ms-grid-rows: (20px)[20];
-      grid-template-rows: repeat(20, 20px);
+  border: 2px dotted #f0f0f0;
+  -ms-grid-columns: (14px)[var];
+      grid-template-columns: repeat(var(--colNum), 14px);
+  -ms-grid-rows: (14px)[var];
+      grid-template-rows: repeat(var(--rowNum), 14px);
   background-image: radial-gradient(circle, #01a438, #049b32, #06932b, #078a25, #07821f, #047d21, #017723, #007224, #006e2b, #006931, #006535, #036039);
+}
+
+.snake__playground--medium {
+  border-top: solid;
+  border-bottom: solid;
+}
+
+.snake__playground--hard {
+  border-style: solid;
+  border-color: #000;
+}
+
+.snake__playground--hidden {
+  display: none;
 }
 
 .snake__box {
@@ -39,6 +64,38 @@
 .snake__figure {
   border: unset;
   background-image: radial-gradient(circle, #413b01, #444201, #474901, #495001, #4a5702, #4a5902, #4b5c03, #4b5e03, #4b5b03, #4b5903, #4a5603, #4a5403);
+}
+
+.settings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.settings--hidden {
+  display: none;
+}
+
+.settings__game-difficulty {
+  min-width: 200px;
+}
+
+.settings__playground-size {
+  height: 100%;
+}
+
+.settings__btn {
+  background: #07821f;
+  min-height: 30px;
+  min-width: 100px;
+  color: #fff;
+  font-size: 2rem;
 }
 
 .settings__input {
@@ -58,7 +115,7 @@
 }
 
 .settings__input--medium:before {
-  border-top-style: solid;
+  border-top: solid;
   border-bottom: solid;
 }
 

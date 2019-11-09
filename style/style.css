@@ -57,13 +57,14 @@ body {
   display: none;
 }
 
-.snake__box {
-  border: 1px solid #ccc;
+.snake__figure {
+  background-image: radial-gradient(circle, #413b01, #444201, #474901, #495001, #4a5702, #4a5902, #4b5c03, #4b5e03, #4b5b03, #4b5903, #4a5603, #4a5403);
 }
 
-.snake__figure {
-  border: unset;
-  background-image: radial-gradient(circle, #413b01, #444201, #474901, #495001, #4a5702, #4a5902, #4b5c03, #4b5e03, #4b5b03, #4b5903, #4a5603, #4a5403);
+.snake__food {
+  background: #ffea00;
+  border-radius: 50%;
+  height: 100%;
 }
 
 .settings {

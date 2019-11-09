@@ -56,10 +56,8 @@ body {
     }
   }
   &__box {
-    border: 1px solid #ccc;
   }
   &__figure {
-    border: unset;
     background-image: radial-gradient(
       circle,
       #413b01,
@@ -75,6 +73,11 @@ body {
       #4a5603,
       #4a5403
     );
+  }
+  &__food {
+    background: #ffea00;
+    border-radius: 50%;
+    height: 100%;
   }
 }
 

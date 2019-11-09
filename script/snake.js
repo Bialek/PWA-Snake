@@ -16,7 +16,10 @@ const gameSetting = {
     Hard: 'Hard',
   },
   actualDifficult: 'Easy',
-  playGroundSize: 0,
+  playgroundSize: 0,
+  playgroundFullSize: 0,
+  foodId: 0,
+  gameSpeed: 1000,
 };
 
 let actualDirectors = basicDirectors.left;
@@ -47,24 +50,32 @@ function generateSnake(position) {
 }
 
 function generatePlayground(size) {
-  const playGroundSize = size * size;
-  gameSetting.playGroundSize = playGroundSize;
-  for (let i = 1; i <= playGroundSize; i++) {
-    let lastIterationChar = `${i}`.slice(-1);
-    //pushing first ten, last ten and
-    //every id number that last character is 0 or 1 to array to get
-    //borders positions ids
+  const playgroundFullSize = size * size;
+  gameSetting.playgroundFullSize = playgroundFullSize;
+  let isLeftBorder;
+  playgroundBorderPositionsTop = [];
+  playgroundBorderPositionsLeft = [1];
+  playgroundBorderPositionsDown = [];
+  playgroundBorderPositionsRight = [];
+  for (let i = 1; i <= playgroundFullSize; i++) {
     if (i <= size) {
       playgroundBorderPositionsTop = [...playgroundBorderPositionsTop, i];
     }
-    if (i > playGroundSize - size) {
+    if (i > playgroundFullSize - size) {
       playgroundBorderPositionsDown = [...playgroundBorderPositionsDown, i];
     }
-    if (lastIterationChar === '1') {
-      playgroundBorderPositionsLeft = [...playgroundBorderPositionsLeft, i];
-    }
-    if (lastIterationChar === '0') {
+
+    isLeftBorder = i % size;
+
+    if (isLeftBorder === 0) {
       playgroundBorderPositionsRight = [...playgroundBorderPositionsRight, i];
+      if (i !== gameSetting.playgroundFullSize) {
+        let nextIndex = i + 1;
+        playgroundBorderPositionsLeft = [
+          ...playgroundBorderPositionsLeft,
+          nextIndex,
+        ];
+      }
     }
 
     playGround.insertAdjacentHTML(
@@ -72,7 +83,8 @@ function generatePlayground(size) {
       `<div id=${i} class="snake__box">`
     );
   }
-  generateSnake(playGroundSize / 2 - size / 2);
+
+  generateSnake(playgroundFullSize / 2 - size / 2);
 }
 
 function moving(direct) {
@@ -80,7 +92,8 @@ function moving(direct) {
 
   snakePosition.forEach((positionId, key) => {
     const FIRST_ARRAY_ELEMENT = 0;
-    let newFirstElementPosition = positionId + direct;
+
+    let newFirstElementPosition = direct + positionId;
 
     if (key === FIRST_ARRAY_ELEMENT) {
       switch (actualDirectors) {
@@ -91,7 +104,8 @@ function moving(direct) {
                 gameSetting.actualDifficult === gameSetting.basicDifficults.Easy
               ) {
                 newFirstElementPosition =
-                  gameSetting.playGroundSize + newFirstElementPosition;
+                  gameSetting.playgroundFullSize + newFirstElementPosition;
+
                 break;
               }
 
@@ -110,28 +124,37 @@ function moving(direct) {
               id => id === newFirstElementPosition
             );
 
-            if (searchPositionId && searchNewPositionId) {
+            if (
+              searchPositionId &&
+              searchNewPositionId |
+                (newFirstElementPosition > gameSetting.playgroundFullSize)
+            ) {
               if (
                 gameSetting.actualDifficult === gameSetting.basicDifficults.Hard
               ) {
                 return endGame();
               }
-              newFirstElementPosition -= 10;
+
+              newFirstElementPosition =
+                newFirstElementPosition - gameSetting.playgroundSize;
             }
           }
           break;
 
         case basicDirectors.down:
-          if (newFirstElementPosition > gameSetting.playGroundSize) {
-            if (
-              gameSetting.actualDifficult === gameSetting.basicDifficults.Easy
-            ) {
-              newFirstElementPosition =
-                newFirstElementPosition - gameSetting.playGroundSize;
-              break;
-            }
+          {
+            if (newFirstElementPosition > gameSetting.playgroundFullSize) {
+              if (
+                gameSetting.actualDifficult === gameSetting.basicDifficults.Easy
+              ) {
+                newFirstElementPosition =
+                  newFirstElementPosition - gameSetting.playgroundFullSize;
 
-            return endGame();
+                break;
+              }
+
+              return endGame();
+            }
           }
           break;
 
@@ -151,10 +174,11 @@ function moving(direct) {
               ) {
                 return endGame();
               }
-              newFirstElementPosition += 10;
+              newFirstElementPosition += gameSetting.playgroundSize;
             }
           }
           break;
+
         default:
           break;
       }
@@ -168,10 +192,17 @@ function moving(direct) {
       }
 
       addSnakeClassToElement(newFirstElementPosition);
+
       newPositionIds = [...newPositionIds, newFirstElementPosition];
     }
 
     if (key === snakePosition.length - 1) {
+      if (newPositionIds[0] === gameSetting.foodId) {
+        removeFoodToPlayground();
+
+        newPositionIds = [...newPositionIds, positionId];
+      }
+
       removeSnakeClassToElement(positionId);
     }
 
@@ -188,8 +219,8 @@ const moveLeft = () => {
     actualDirectors !== basicDirectors.left &&
     actualDirectors !== basicDirectors.right
   ) {
-    moving(basicDirectors.left);
     actualDirectors = basicDirectors.left;
+    moving(basicDirectors.left);
   }
 };
 
@@ -198,8 +229,8 @@ const moveRight = () => {
     actualDirectors !== basicDirectors.left &&
     actualDirectors !== basicDirectors.right
   ) {
-    moving(basicDirectors.right);
     actualDirectors = basicDirectors.right;
+    moving(basicDirectors.right);
   }
 };
 
@@ -208,8 +239,8 @@ const movetop = () => {
     actualDirectors !== basicDirectors.down &&
     actualDirectors !== basicDirectors.top
   ) {
-    moving(basicDirectors.top);
     actualDirectors = basicDirectors.top;
+    moving(basicDirectors.top);
   }
 };
 
@@ -218,8 +249,8 @@ const moveDown = () => {
     actualDirectors !== basicDirectors.down &&
     actualDirectors !== basicDirectors.top
   ) {
-    moving(basicDirectors.down);
     actualDirectors = basicDirectors.down;
+    moving(basicDirectors.down);
   }
 };
 
@@ -246,35 +277,66 @@ function detectKey(event) {
   }
 }
 
+function addFoodToPlayground(elementId) {
+  const element = document.getElementById(elementId);
+
+  element.insertAdjacentHTML('beforeend', `<div class="snake__food"></div>`);
+}
+
+const randomIdgenerator = () =>
+  Math.floor(Math.random() * gameSetting.playgroundFullSize);
+
+const generateFood = () => {
+  let foodId;
+  let isCorrectId;
+  do {
+    foodId = randomIdgenerator();
+    isCorrectId = snakePosition.find(id => id === foodId);
+  } while (isCorrectId);
+
+  gameSetting.foodId = foodId;
+
+  addFoodToPlayground(foodId);
+};
+
 const startBtn = document.querySelector('.settings__btn');
 
 startBtn.addEventListener('click', startGame);
 let autoMove = null;
 
+const startAutoMove = () =>
+  (autoMove = setInterval(
+    () => moving(actualDirectors),
+    gameSetting.gameSpeed
+  ));
+
 function startGame() {
   snakePosition = [];
   actualDirectors = gameSetting.defaultDirector;
+  gameSetting.gameSpeed = 1000;
   settings.classList.add('settings--hidden');
 
   playGround.innerHTML = '';
   gameSetting.actualDifficult = document.querySelector(
     'input[name=difficulty]:checked'
   ).value;
-  const playGroundSize = document.querySelector(
+  const playgroundSize = document.querySelector(
     '.settings__playground-size-select'
   ).value;
 
+  gameSetting.playgroundSize = parseInt(playgroundSize);
+
   basicDirectors = {
     ...basicDirectors,
-    top: -playGroundSize,
-    down: +playGroundSize,
+    top: -playgroundSize,
+    down: +playgroundSize,
   };
 
   const style = document.documentElement.style;
-  style.setProperty('--rowNum', playGroundSize);
-  style.setProperty('--colNum', playGroundSize);
+  style.setProperty('--rowNum', playgroundSize);
+  style.setProperty('--colNum', playgroundSize);
 
-  generatePlayground(playGroundSize);
+  generatePlayground(playgroundSize);
 
   playGround.classList.remove('snake__playground--hidden');
 
@@ -284,9 +346,20 @@ function startGame() {
   if (gameSetting.actualDifficult === gameSetting.basicDifficults.Hard) {
     playGround.classList.add('snake__playground--hard');
   }
-
+  generateFood();
   document.addEventListener('keypress', detectKey);
-  autoMove = setInterval(() => moving(actualDirectors), 1000);
+  startAutoMove();
+}
+
+function removeFoodToPlayground() {
+  const element = document.querySelector('.snake__food');
+  element.remove();
+  generateFood();
+  if (gameSetting.gameSpeed !== 100) {
+    gameSetting.gameSpeed = gameSetting.gameSpeed - 50;
+  }
+  clearInterval(autoMove);
+  startAutoMove();
 }
 
 function endGame() {

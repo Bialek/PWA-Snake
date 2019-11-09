@@ -58,7 +58,16 @@ body {
 }
 
 .snake__figure {
-  background-image: radial-gradient(circle, #413b01, #444201, #474901, #495001, #4a5702, #4a5902, #4b5c03, #4b5e03, #4b5b03, #4b5903, #4a5603, #4a5403);
+  position: relative;
+}
+
+.snake__figure:after {
+  width: 80%;
+  height: 80%;
+  content: '';
+  position: absolute;
+  background-image: radial-gradient(circle, #be0000, #de3a54, #ea6d96, #ea9dca, #e9caec, #e9caec, #e9caec, #e9caec, #ea9dca, #ea6d96, #de3a54, #be0000);
+  background-size: 80% 80%;
 }
 
 .snake__food {

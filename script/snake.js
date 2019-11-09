@@ -8,6 +8,8 @@ let basicDirectors = {
   right: 1,
 };
 
+let actualDirectors = basicDirectors.left;
+
 const gameSetting = {
   defaultDirector: basicDirectors.left,
   basicDifficults: {
@@ -20,11 +22,9 @@ const gameSetting = {
   playgroundFullSize: 0,
   foodId: 0,
   gameSpeed: 1000,
+  points: 0,
+  startSnakeLenght: 4,
 };
-
-let actualDirectors = basicDirectors.left;
-
-const START_SNAKE_LENGHT = 4;
 
 let snakePosition = [];
 let playgroundBorderPositionsTop = [];
@@ -43,7 +43,7 @@ function removeSnakeClassToElement(elementId) {
 }
 
 function generateSnake(position) {
-  for (let i = 0; i <= START_SNAKE_LENGHT; i++) {
+  for (let i = 0; i <= gameSetting.startSnakeLenght; i++) {
     addSnakeClassToElement(position + i);
     snakePosition = [...snakePosition, position + i];
   }
@@ -168,7 +168,10 @@ function moving(direct) {
               id => id === newFirstElementPosition
             );
 
-            if (searchPositionId && searchNewPositionId) {
+            if (
+              (searchPositionId && searchNewPositionId) |
+              !newFirstElementPosition
+            ) {
               if (
                 gameSetting.actualDifficult === gameSetting.basicDifficults.Hard
               ) {
@@ -220,7 +223,6 @@ const moveLeft = () => {
     actualDirectors !== basicDirectors.right
   ) {
     actualDirectors = basicDirectors.left;
-    moving(basicDirectors.left);
   }
 };
 
@@ -230,7 +232,6 @@ const moveRight = () => {
     actualDirectors !== basicDirectors.right
   ) {
     actualDirectors = basicDirectors.right;
-    moving(basicDirectors.right);
   }
 };
 
@@ -240,7 +241,6 @@ const movetop = () => {
     actualDirectors !== basicDirectors.top
   ) {
     actualDirectors = basicDirectors.top;
-    moving(basicDirectors.top);
   }
 };
 
@@ -250,7 +250,6 @@ const moveDown = () => {
     actualDirectors !== basicDirectors.top
   ) {
     actualDirectors = basicDirectors.down;
-    moving(basicDirectors.down);
   }
 };
 
@@ -314,6 +313,7 @@ function startGame() {
   snakePosition = [];
   actualDirectors = gameSetting.defaultDirector;
   gameSetting.gameSpeed = 1000;
+  gameSetting.points = 0;
   settings.classList.add('settings--hidden');
 
   playGround.innerHTML = '';
@@ -343,6 +343,7 @@ function startGame() {
   if (gameSetting.actualDifficult === gameSetting.basicDifficults.Medium) {
     playGround.classList.add('snake__playground--medium');
   }
+
   if (gameSetting.actualDifficult === gameSetting.basicDifficults.Hard) {
     playGround.classList.add('snake__playground--hard');
   }
@@ -354,6 +355,7 @@ function startGame() {
 function removeFoodToPlayground() {
   const element = document.querySelector('.snake__food');
   element.remove();
+  gameSetting.points += 10;
   generateFood();
   if (gameSetting.gameSpeed !== 100) {
     gameSetting.gameSpeed = gameSetting.gameSpeed - 50;
@@ -363,7 +365,7 @@ function removeFoodToPlayground() {
 }
 
 function endGame() {
-  alert('Game Over!');
+  alert('Game Over!\n Points: ' + gameSetting.points);
   playGround.classList.remove(
     'snake__playground--medium',
     'snake__playground--hard'

@@ -9,12 +9,14 @@ let basicDirectors = {
 };
 
 const gameSetting = {
+  defaultDirector: basicDirectors.left,
   basicDifficults: {
     Easy: 'Easy',
     Medium: 'Medium',
     Hard: 'Hard',
   },
   actualDifficult: 'Easy',
+  playGroundSize: 0,
 };
 
 let actualDirectors = basicDirectors.left;
@@ -46,6 +48,7 @@ function generateSnake(position) {
 
 function generatePlayground(size) {
   const playGroundSize = size * size;
+  gameSetting.playGroundSize = playGroundSize;
   for (let i = 1; i <= playGroundSize; i++) {
     let lastIterationChar = `${i}`.slice(-1);
     //pushing first ten, last ten and
@@ -81,36 +84,87 @@ function moving(direct) {
 
     if (key === FIRST_ARRAY_ELEMENT) {
       switch (actualDirectors) {
-        case basicDirectors.top: {
-          console.log('top');
-          endGame();
-        }
+        case basicDirectors.top:
+          {
+            if (newFirstElementPosition < 0) {
+              if (
+                gameSetting.actualDifficult === gameSetting.basicDifficults.Easy
+              ) {
+                newFirstElementPosition =
+                  gameSetting.playGroundSize + newFirstElementPosition;
+                break;
+              }
+
+              return endGame();
+            }
+          }
+          break;
 
         case basicDirectors.right:
-          console.log('top');
+          {
+            const searchPositionId = playgroundBorderPositionsRight.find(
+              id => id === positionId
+            );
+
+            const searchNewPositionId = playgroundBorderPositionsLeft.find(
+              id => id === newFirstElementPosition
+            );
+
+            if (searchPositionId && searchNewPositionId) {
+              if (
+                gameSetting.actualDifficult === gameSetting.basicDifficults.Hard
+              ) {
+                return endGame();
+              }
+              newFirstElementPosition -= 10;
+            }
+          }
+          break;
 
         case basicDirectors.down:
-          console.log('top');
-
-        case basicDirectors.left: {
-          const searchPositionId = playgroundBorderPositionsLeft.find(
-            id => id === positionId
-          );
-          // console.log(searchPositionId);
-
-          const searchNewPositionId = playgroundBorderPositionsRight.find(
-            id => id === newFirstElementPosition
-          );
-
-          if (searchPositionId && searchNewPositionId) {
+          if (newFirstElementPosition > gameSetting.playGroundSize) {
             if (
-              gameSetting.actualDifficult === gameSetting.basicDifficults.Hard
+              gameSetting.actualDifficult === gameSetting.basicDifficults.Easy
             ) {
-              endGame();
+              newFirstElementPosition =
+                newFirstElementPosition - gameSetting.playGroundSize;
+              break;
             }
-            newFirstElementPosition += 10;
+
+            return endGame();
           }
-        }
+          break;
+
+        case basicDirectors.left:
+          {
+            const searchPositionId = playgroundBorderPositionsLeft.find(
+              id => id === positionId
+            );
+
+            const searchNewPositionId = playgroundBorderPositionsRight.find(
+              id => id === newFirstElementPosition
+            );
+
+            if (searchPositionId && searchNewPositionId) {
+              if (
+                gameSetting.actualDifficult === gameSetting.basicDifficults.Hard
+              ) {
+                return endGame();
+              }
+              newFirstElementPosition += 10;
+            }
+          }
+          break;
+        default:
+          break;
+      }
+
+      const isCollision = snakePosition.findIndex(
+        id => id === newFirstElementPosition
+      );
+
+      if (isCollision !== -1) {
+        return endGame();
       }
 
       addSnakeClassToElement(newFirstElementPosition);
@@ -195,8 +249,11 @@ function detectKey(event) {
 const startBtn = document.querySelector('.settings__btn');
 
 startBtn.addEventListener('click', startGame);
+let autoMove = null;
 
 function startGame() {
+  snakePosition = [];
+  actualDirectors = gameSetting.defaultDirector;
   settings.classList.add('settings--hidden');
 
   playGround.innerHTML = '';
@@ -212,7 +269,6 @@ function startGame() {
     top: -playGroundSize,
     down: +playGroundSize,
   };
-  console.log(gameSetting.actualDifficult);
 
   const style = document.documentElement.style;
   style.setProperty('--rowNum', playGroundSize);
@@ -230,8 +286,7 @@ function startGame() {
   }
 
   document.addEventListener('keypress', detectKey);
-  const autoMove = setInterval(() => moving(actualDirectors), 1000);
-  return autoMove;
+  autoMove = setInterval(() => moving(actualDirectors), 1000);
 }
 
 function endGame() {
@@ -241,7 +296,6 @@ function endGame() {
     'snake__playground--hard'
   );
   playGround.classList.add('snake__playground--hidden');
-
   clearInterval(autoMove);
   document.removeEventListener('keypress', detectKey);
   settings.classList.remove('settings--hidden');

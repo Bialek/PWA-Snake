@@ -132,4 +132,15 @@ body {
 .settings__input--hard:before {
   border-style: solid;
 }
+
+.points-view {
+  position: absolute;
+  left: auto;
+  right: auto;
+  margin: 0 auto;
+}
+
+.points-view--hidden {
+  display: none;
+}
 /*# sourceMappingURL=style.css.map */

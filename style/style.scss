@@ -135,3 +135,13 @@ body {
     }
   }
 }
+
+.points-view {
+  position: absolute;
+  left: auto;
+  right: auto;
+  margin: 0 auto;
+  &--hidden {
+    display: none;
+  }
+}

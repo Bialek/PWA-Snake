@@ -273,21 +273,32 @@ const moveDown = () => {
 };
 
 function detectKey(event) {
+  const keyCode = {
+    w: 87,
+    s: 83,
+    a: 65,
+    d: 68,
+    arrowTop: 38,
+    arrowDown:40,
+    arrowRight: 39,
+    arrowLeft: 37,
+  }
+  
   switch (event.keyCode) {
-    case 37:
-    case 97:
+    case keyCode.arrowLeft:
+    case keyCode.a:
       moveLeft();
       break;
-    case 38:
-    case 119:
+      case keyCode.arrowTop:
+      case keyCode.w:
       moveTop();
       break;
-    case 39:
-    case 100:
+      case keyCode.arrowRight:
+      case keyCode.d:
       moveRight();
       break;
-    case 40:
-    case 115:
+      case keyCode.arrowDown:
+      case keyCode.s:
       moveDown();
       break;
     default:
@@ -363,7 +374,7 @@ function startGame() {
     playGround.classList.add('snake__playground--hard');
   }
   generateFood();
-  document.addEventListener('keypress', detectKey);
+  document.addEventListener('keydown', detectKey);
   startAutoMove();
 }
 
@@ -389,7 +400,7 @@ function endGame() {
   pointsViewDiv.classList.add('points-view--hidden');
   playGround.classList.add('snake__playground--hidden');
   clearInterval(autoMove);
-  document.removeEventListener('keypress', detectKey);
+  document.removeEventListener('keydown', detectKey);
   settings.classList.remove('settings--hidden');
   gameSetting.points = 0;
   pointsCounterView.innerHTML = gameSetting.points;

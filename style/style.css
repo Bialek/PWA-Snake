@@ -1,6 +1,8 @@
 :root {
   --rowNum: 10;
   --colNum: 10;
+  --boxWidth: 14px;
+  --boxHeight: 14px;
 }
 
 * {
@@ -10,24 +12,22 @@
 
 body {
   margin: 0;
+  color: #ccc;
+  font-size: 1.5em;
 }
 
 .snake {
-  min-height: 100vh;
-  background: #f0f0f0;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 20px;
-}
-
-.snake__container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  min-height: 100vh;
+  background-image: radial-gradient(circle, #3c9d9b, #268998, #25748f, #305f81, #394a6d);
 }
 
 .snake__playground {
@@ -35,12 +35,12 @@ body {
   margin: 0 auto;
   display: -ms-inline-grid;
   display: inline-grid;
-  border: 2px dotted #f0f0f0;
-  -ms-grid-columns: (14px)[var];
-      grid-template-columns: repeat(var(--colNum), 14px);
-  -ms-grid-rows: (14px)[var];
-      grid-template-rows: repeat(var(--rowNum), 14px);
-  background-image: radial-gradient(circle, #01a438, #049b32, #06932b, #078a25, #07821f, #047d21, #017723, #007224, #006e2b, #006931, #006535, #036039);
+  border: 2px dotted rgba(240, 240, 240, 0.2);
+  -ms-grid-columns: (var(--boxWidth))[var];
+      grid-template-columns: repeat(var(--colNum), var(--boxWidth));
+  -ms-grid-rows: (var(--boxHeight))[var];
+      grid-template-rows: repeat(var(--rowNum), var(--boxHeight));
+  overflow: hidden;
 }
 
 .snake__playground--medium {
@@ -50,11 +50,24 @@ body {
 
 .snake__playground--hard {
   border-style: solid;
-  border-color: #000;
 }
 
 .snake__playground--hidden {
   display: none;
+}
+
+.snake__box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
 }
 
 .snake__figure {
@@ -62,18 +75,31 @@ body {
 }
 
 .snake__figure:after {
-  width: 80%;
-  height: 80%;
   content: '';
   position: absolute;
-  background-image: radial-gradient(circle, #be0000, #de3a54, #ea6d96, #ea9dca, #e9caec, #e9caec, #e9caec, #e9caec, #ea9dca, #ea6d96, #de3a54, #be0000);
-  background-size: 80% 80%;
+  width: 100%;
+  height: 100%;
+  background: #c0ffb3;
+  opacity: 0.4;
+  background-image: radial-gradient(circle, #52de97, #6ce49b, #83eb9f, #97f1a4, #a9f7aa, #a9f7aa, #a9f7aa, #a9f7aa, #97f1a4, #83eb9f, #6ce49b, #52de97);
+}
+
+.snake__figure--head:after {
+  width: 100%;
+  height: 100%;
+  background: #52de97;
+  opacity: 1;
 }
 
 .snake__food {
-  background: #ffea00;
+  background: #f1c40f;
   border-radius: 50%;
-  height: 100%;
+  height: 50%;
+  width: 50%;
+  -webkit-box-shadow: 0px 0px 15px 1px #ffd500;
+          box-shadow: 0px 0px 15px 1px #ffd500;
+  -webkit-animation: food 1.5s ease-in-out infinite;
+          animation: food 1.5s ease-in-out infinite;
 }
 
 .settings {
@@ -88,6 +114,15 @@ body {
           align-items: center;
 }
 
+@media screen and (max-width: 768px) {
+  .settings {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+  }
+}
+
 .settings--hidden {
   display: none;
 }
@@ -100,12 +135,20 @@ body {
   height: 100%;
 }
 
+.settings__playground-size-select {
+  background: transparent;
+  color: #ccc;
+  width: 100%;
+  padding: 10px;
+}
+
 .settings__btn {
-  background: #07821f;
+  background: transparent;
   min-height: 30px;
   min-width: 100px;
-  color: #fff;
-  font-size: 2rem;
+  color: #ccc;
+  border-color: #ccc;
+  font-size: 1.5rem;
 }
 
 .settings__input {
@@ -121,7 +164,7 @@ body {
   width: 30px;
   height: 30px;
   left: 0;
-  border: 2px dotted #000;
+  border: 2px dotted #ccc;
 }
 
 .settings__input--medium:before {
@@ -135,12 +178,53 @@ body {
 
 .points-view {
   position: absolute;
-  left: auto;
-  right: auto;
+  left: 0;
+  right: 0;
+  top: 0.5rem;
   margin: 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .points-view--hidden {
   display: none;
+}
+
+.points-view p {
+  margin: 0 10px;
+}
+
+@-webkit-keyframes food {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes food {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
 }
 /*# sourceMappingURL=style.css.map */

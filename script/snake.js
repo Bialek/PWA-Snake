@@ -2,6 +2,7 @@ const playGround = document.querySelector('.snake__playground');
 const settings = document.querySelector('.settings');
 const pointsViewDiv = document.querySelector('.points-view');
 const pointsCounterView = document.querySelector('.points-view__counter');
+const styleDoc = document.documentElement.style;
 
 let basicDirectors = {
   top: 0,
@@ -21,7 +22,7 @@ const gameSetting = {
   playgroundSize: 0,
   playgroundFullSize: 0,
   foodId: 0,
-  gameSpeed: 1000,
+  gameSpeed: 400,
   points: 0,
   startSnakeLenght: 4,
 };
@@ -35,19 +36,41 @@ let playgroundBorderPositionsLeft = [];
 let playgroundBorderPositionsDown = [];
 let playgroundBorderPositionsRight = [];
 
-function addSnakeClassToElement(elementId) {
+const testNewDirectIsOppositeToActualDirector = newDirector =>
+  (newDirector === basicDirectors.top &&
+    actualDirector === basicDirectors.down) ||
+  (newDirector === basicDirectors.right &&
+    actualDirector === basicDirectors.left) ||
+  (newDirector === basicDirectors.down &&
+    actualDirector === basicDirectors.top) ||
+  (newDirector === basicDirectors.left &&
+    actualDirector === basicDirectors.right);
+
+const testActualDirectIsHorizontal = () =>
+  actualDirector !== basicDirectors.top &&
+  actualDirector !== basicDirectors.down;
+
+function addSnakeClassToElement(elementId, head = false) {
   const snakeElement = document.getElementById(elementId);
+
   snakeElement.classList.add('snake__figure');
+
+  if (head) {
+    snakeElement.classList.add('snake__figure--head');
+  }
 }
 
-function removeSnakeClassToElement(elementId) {
+function removeSnakeClassToElement(elementId, head = false) {
   const snakeElement = document.getElementById(elementId);
-  snakeElement.classList.remove('snake__figure');
+  snakeElement.classList.remove('snake__figure--head');
+  if (!head) {
+    snakeElement.classList.remove('snake__figure');
+  }
 }
 
 function generateSnake(position) {
   for (let i = 0; i <= gameSetting.startSnakeLenght; i++) {
-    addSnakeClassToElement(position + i);
+    addSnakeClassToElement(position + i, i === 0);
     snakePosition = [...snakePosition, position + i];
   }
 }
@@ -87,7 +110,9 @@ function generatePlayground(size) {
     );
   }
 
-  generateSnake(playgroundFullSize / 2 - size / 2);
+  const defaultSnakePosition = playgroundFullSize / 2 - size / 2;
+
+  generateSnake(defaultSnakePosition);
 }
 
 function moving() {
@@ -199,7 +224,8 @@ function moving() {
         return endGame();
       }
 
-      addSnakeClassToElement(newFirstElementPosition);
+      removeSnakeClassToElement(snakePosition[0], true);
+      addSnakeClassToElement(newFirstElementPosition, true);
 
       newPositionIds = [...newPositionIds, newFirstElementPosition];
     }
@@ -211,7 +237,7 @@ function moving() {
         newPositionIds = [...newPositionIds, positionId];
       }
 
-      removeSnakeClassToElement(positionId);
+      removeSnakeClassToElement(positionId, false);
     }
 
     if (key !== 0) {
@@ -222,24 +248,10 @@ function moving() {
   snakePosition = newPositionIds;
 }
 
-const testActualDirectIsVertical =
-  actualDirector !== basicDirectors.top &&
-  actualDirector !== basicDirectors.down;
-
-const testNewDirectIsOppositeToActualDirector = newDirector =>
-  (newDirector === basicDirectors.top &&
-    actualDirector === basicDirectors.down) ||
-  (newDirector === basicDirectors.right &&
-    actualDirector === basicDirectors.left) ||
-  (newDirector === basicDirectors.down &&
-    actualDirector === basicDirectors.top) ||
-  (newDirector === basicDirectors.left &&
-    actualDirector === basicDirectors.right);
-
 const moveLeft = () => {
   if (
     !testNewDirectIsOppositeToActualDirector(basicDirectors.left) &&
-    testActualDirectIsVertical
+    !testActualDirectIsHorizontal()
   ) {
     newDirector = basicDirectors.left;
   }
@@ -248,7 +260,7 @@ const moveLeft = () => {
 const moveRight = () => {
   if (
     !testNewDirectIsOppositeToActualDirector(basicDirectors.right) &&
-    testActualDirectIsVertical
+    !testActualDirectIsHorizontal()
   ) {
     newDirector = basicDirectors.right;
   }
@@ -257,7 +269,7 @@ const moveRight = () => {
 const moveTop = () => {
   if (
     !testNewDirectIsOppositeToActualDirector(basicDirectors.top) &&
-    testActualDirectIsVertical
+    testActualDirectIsHorizontal()
   ) {
     newDirector = basicDirectors.top;
   }
@@ -266,7 +278,7 @@ const moveTop = () => {
 const moveDown = () => {
   if (
     !testNewDirectIsOppositeToActualDirector(basicDirectors.down) &&
-    testActualDirectIsVertical
+    testActualDirectIsHorizontal()
   ) {
     newDirector = basicDirectors.down;
   }
@@ -279,32 +291,54 @@ function detectKey(event) {
     a: 65,
     d: 68,
     arrowTop: 38,
-    arrowDown:40,
+    arrowDown: 40,
     arrowRight: 39,
     arrowLeft: 37,
-  }
-  
+  };
+
   switch (event.keyCode) {
     case keyCode.arrowLeft:
     case keyCode.a:
       moveLeft();
       break;
-      case keyCode.arrowTop:
-      case keyCode.w:
+    case keyCode.arrowTop:
+    case keyCode.w:
       moveTop();
       break;
-      case keyCode.arrowRight:
-      case keyCode.d:
+    case keyCode.arrowRight:
+    case keyCode.d:
       moveRight();
       break;
-      case keyCode.arrowDown:
-      case keyCode.s:
+    case keyCode.arrowDown:
+    case keyCode.s:
       moveDown();
       break;
     default:
       break;
   }
 }
+
+function calcBoxSize() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  let PERCENT_OF_USED_WINDOW = 0.75;
+
+  if (width <= 768) {
+    PERCENT_OF_USED_WINDOW = 0.85;
+  }
+
+  const smallerValue = width > height ? height : width;
+
+  let boxSize = Math.floor(
+    (smallerValue * PERCENT_OF_USED_WINDOW) / gameSetting.playgroundSize
+  );
+
+  styleDoc.setProperty('--boxWidth', boxSize + 'px');
+  styleDoc.setProperty('--boxHeight', boxSize + 'px');
+}
+
+window.addEventListener('resize', calcBoxSize);
 
 function addFoodToPlayground(elementId) {
   const element = document.getElementById(elementId);
@@ -338,7 +372,7 @@ const startAutoMove = () =>
 
 function startGame() {
   snakePosition = [];
-  gameSetting.gameSpeed = 1000;
+  gameSetting.gameSpeed = 400;
   settings.classList.add('settings--hidden');
   pointsViewDiv.classList.remove('points-view--hidden');
 
@@ -358,9 +392,9 @@ function startGame() {
     down: +playgroundSize,
   };
 
-  const style = document.documentElement.style;
-  style.setProperty('--rowNum', playgroundSize);
-  style.setProperty('--colNum', playgroundSize);
+  calcBoxSize();
+  styleDoc.setProperty('--rowNum', playgroundSize);
+  styleDoc.setProperty('--colNum', playgroundSize);
 
   generatePlayground(playgroundSize);
 
@@ -385,7 +419,7 @@ function removeFoodToPlayground() {
   pointsCounterView.innerHTML = gameSetting.points;
   generateFood();
   if (gameSetting.gameSpeed !== 100) {
-    gameSetting.gameSpeed = gameSetting.gameSpeed - 50;
+    gameSetting.gameSpeed = gameSetting.gameSpeed - 25;
   }
   clearInterval(autoMove);
   startAutoMove();

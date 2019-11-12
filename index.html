@@ -10,41 +10,39 @@
   </head>
   <body>
     <div class="snake">
-      <div class="snake__container">
-        <div class="points-view points-view--hidden">
-          <p>Points:</p>
-          <P class="points-view__counter">0</P>
-        </div>
-        <div class="settings">
-          <div class="settings__playground-size">
-            <h4>Playground Size</h4>
-            <select class="settings__playground-size-select">
-              <option value="10">10x10</option>
-              <option value="20">20x20</option>
-              <option value="30">30x30</option>
-              <option value="40">40x40</option>
-              <option value="50">50x50</option>
-            </select>
-          </div>
-          <div class="settings__game-difficulty">
-            <h4>Difficulty level</h4>
-            <div class="settings__input">
-              Easy
-              <input type="radio" name="difficulty" value="Easy" checked />
-            </div>
-            <div class="settings__input settings__input--medium">
-              Medium
-              <input type="radio" name="difficulty" value="Medium" />
-            </div>
-            <div class="settings__input settings__input--hard">
-              Hard
-              <input type="radio" name="difficulty" value="Hard" />
-            </div>
-          </div>
-          <button class="settings__btn">Start game</button>
-        </div>
-        <div class="snake__playground snake__playground--hidden"></div>
+      <div class="points-view points-view--hidden">
+        <p>Points:</p>
+        <P class="points-view__counter">0</P>
       </div>
+      <div class="settings">
+        <div class="settings__playground-size">
+          <h4>Playground Size</h4>
+          <select class="settings__playground-size-select">
+            <option value="30">30x30</option>
+            <option value="50">50x50</option>
+            <option value="70">70x70</option>
+            <option value="90">90x90</option>
+            <option value="110">110x110</option>
+          </select>
+        </div>
+        <div class="settings__game-difficulty">
+          <h4>Difficulty level</h4>
+          <div class="settings__input">
+            Easy
+            <input type="radio" name="difficulty" value="Easy" checked />
+          </div>
+          <div class="settings__input settings__input--medium">
+            Medium
+            <input type="radio" name="difficulty" value="Medium" />
+          </div>
+          <div class="settings__input settings__input--hard">
+            Hard
+            <input type="radio" name="difficulty" value="Hard" />
+          </div>
+        </div>
+        <button class="settings__btn">Start game</button>
+      </div>
+      <div class="snake__playground snake__playground--hidden"></div>
     </div>
     <script src="./script/snake.js"></script>
   </body>

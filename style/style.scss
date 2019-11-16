@@ -3,6 +3,7 @@
   --colNum: 10;
   --boxWidth: 14px;
   --boxHeight: 14px;
+  --headBorderRadius: 50% 0 0 50%;
 }
 
 * {
@@ -49,24 +50,38 @@ body {
   }
 
   &__box {
+    transition-duration: 0.5s;
+    transition-property: background-color, opacity;
+    transition-timing-function: ease-in-out;
+    border-radius: 2px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 1s ease-in-out;
   }
 
   &__figure {
-    position: relative;
-    &:after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: #c0ffb3;
-      opacity: 0.4;
+    width: 100%;
+    height: 100%;
+    background-color: #c0ffb3;
+    opacity: 0.4;
+    background-image: radial-gradient(
+      circle,
+      #52de97,
+      #6ce49b,
+      #83eb9f,
+      #97f1a4,
+      #a9f7aa,
+      #a9f7aa,
+      #a9f7aa,
+      #a9f7aa,
+      #97f1a4,
+      #83eb9f,
+      #6ce49b,
+      #52de97
+    );
+    &--head {
       background-image: radial-gradient(
         circle,
-        #52de97,
         #6ce49b,
         #83eb9f,
         #97f1a4,
@@ -79,21 +94,15 @@ body {
         #6ce49b,
         #52de97
       );
-    }
-    &--head {
-      &:after {
-        width: 100%;
-        height: 100%;
-        background: #52de97;
-        opacity: 1;
-      }
+      opacity: 1;
+      border-radius: var(--headBorderRadius);
     }
   }
   &__food {
     background: #f1c40f;
     border-radius: 50%;
-    height: 50%;
-    width: 50%;
+    height: 60%;
+    width: 60%;
     box-shadow: 0px 0px 15px 1px rgba(255, 213, 0, 1);
     animation: food 1.5s ease-in-out infinite;
   }
@@ -178,7 +187,7 @@ body {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.5);
   }
   100% {
     transform: scale(1);

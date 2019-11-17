@@ -11,21 +11,10 @@
           box-sizing: border-box;
 }
 
-html {
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-}
-
 body {
   margin: 0;
   color: #ccc;
   font-size: 1.5em;
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
 }
 
 .snake {
@@ -40,6 +29,14 @@ body {
           align-items: center;
   min-height: 100vh;
   background-image: radial-gradient(circle, #3c9d9b, #268998, #25748f, #305f81, #394a6d);
+}
+
+@media screen and (max-height: 500px) {
+  .snake {
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start;
+  }
 }
 
 .snake__playground {

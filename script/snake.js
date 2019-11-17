@@ -474,7 +474,7 @@ function startGame() {
   document.addEventListener('keydown', detectKey);
   document.addEventListener('touchstart', handleTouchStart, { passive: false });
   document.addEventListener('touchmove', handleTouchMove, { passive: false });
-
+  window.scrollTo(0, 1);
   startAutoMove();
 }
 

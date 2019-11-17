@@ -142,9 +142,30 @@ function changeHeadStyle() {
   }
 }
 
+function calcBoxSize() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  let PERCENT_OF_USED_WINDOW = 0.85;
+
+  if (width <= 768) {
+    PERCENT_OF_USED_WINDOW = 0.95;
+  }
+
+  const smallerValue = width > height ? height : width;
+
+  let boxSize = Math.floor(
+    (smallerValue * PERCENT_OF_USED_WINDOW) / gameSettings.playgroundSize
+  );
+
+  styleDoc.setProperty('--boxWidth', boxSize + 'px');
+  styleDoc.setProperty('--boxHeight', boxSize + 'px');
+}
+
 function moving() {
   gameSettings.actualDirector = gameSettings.newDirector;
   changeHeadStyle();
+  calcBoxSize();
   let newPositionIds = [];
 
   gameSettings.snakePosition.forEach((positionId, key) => {
@@ -341,17 +362,11 @@ let xDown = null;
 let yDown = null;
 
 function handleTouchStart(event) {
-  event.preventDefault();
-  event.stopPropagation();
-
   xDown = event.changedTouches[0].clientX;
   yDown = event.changedTouches[0].clientY;
 }
 
 function handleTouchMove(event) {
-  event.preventDefault();
-  event.stopPropagation();
-
   if (!xDown || !yDown) {
     return;
   }
@@ -378,28 +393,6 @@ function handleTouchMove(event) {
   xDown = null;
   yDown = null;
 }
-
-function calcBoxSize() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-
-  let PERCENT_OF_USED_WINDOW = 0.85;
-
-  if (width <= 768) {
-    PERCENT_OF_USED_WINDOW = 0.95;
-  }
-
-  const smallerValue = width > height ? height : width;
-
-  let boxSize = Math.floor(
-    (smallerValue * PERCENT_OF_USED_WINDOW) / gameSettings.playgroundSize
-  );
-
-  styleDoc.setProperty('--boxWidth', boxSize + 'px');
-  styleDoc.setProperty('--boxHeight', boxSize + 'px');
-}
-
-document.addEventListener('resize', calcBoxSize);
 
 function addFoodToPlayground(elementId) {
   const element = document.getElementById(elementId);
@@ -475,8 +468,8 @@ function startGame() {
   }
   generateFood();
   document.addEventListener('keydown', detectKey);
-  document.addEventListener('touchstart', handleTouchStart, { passive: false });
-  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  document.addEventListener('touchstart', handleTouchStart);
+  document.addEventListener('touchmove', handleTouchMove);
 
   startAutoMove();
 }

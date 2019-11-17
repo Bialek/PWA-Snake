@@ -363,7 +363,6 @@ let yDown = null;
 
 function handleTouchStart(event) {
   event.preventDefault();
-  event.stopPropagation();
 
   xDown = event.changedTouches[0].clientX;
   yDown = event.changedTouches[0].clientY;
@@ -371,7 +370,7 @@ function handleTouchStart(event) {
 
 function handleTouchMove(event) {
   event.preventDefault();
-  event.stopPropagation();
+
   if (!xDown || !yDown) {
     return;
   }

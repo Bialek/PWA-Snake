@@ -31,11 +31,10 @@ const defaultSettings = {
   playgroundBorderPositionsRight: [],
   actualDirector: basicDirectors.left,
   newDirector: basicDirectors.left,
+  snakePosition: [],
 };
 
-const gameSettings = Object.assign({}, defaultSettings);
-
-let snakePosition = [];
+let gameSettings = Object.assign({}, defaultSettings);
 
 const testNewDirectIsOppositeToActualDirector = newDirector =>
   (newDirector === basicDirectors.top &&
@@ -72,7 +71,7 @@ function removeSnakeClassToElement(elementId, head = false) {
 function generateSnake(position) {
   for (let i = 0; i <= gameSettings.startSnakeLenght; i++) {
     addSnakeClassToElement(position + i, i === 0);
-    snakePosition = [...snakePosition, position + i];
+    gameSettings.snakePosition = [...gameSettings.snakePosition, position + i];
   }
 }
 
@@ -147,7 +146,7 @@ function moving() {
   changeHeadStyle();
   let newPositionIds = [];
 
-  snakePosition.forEach((positionId, key) => {
+  gameSettings.snakePosition.forEach((positionId, key) => {
     const FIRST_ARRAY_ELEMENT = 0;
 
     let newFirstElementPosition = gameSettings.actualDirector + positionId;
@@ -235,7 +234,7 @@ function moving() {
           break;
       }
 
-      const isCollision = snakePosition.findIndex(
+      const isCollision = gameSettings.snakePosition.findIndex(
         id => id === newFirstElementPosition
       );
 
@@ -243,13 +242,13 @@ function moving() {
         return endGame();
       }
 
-      removeSnakeClassToElement(snakePosition[0], true);
+      removeSnakeClassToElement(gameSettings.snakePosition[0], true);
       addSnakeClassToElement(newFirstElementPosition, true);
 
       newPositionIds = [...newPositionIds, newFirstElementPosition];
     }
 
-    if (key === snakePosition.length - 1) {
+    if (key === gameSettings.snakePosition.length - 1) {
       if (newPositionIds[0] === gameSettings.foodId) {
         removeFoodToPlayground();
 
@@ -260,11 +259,11 @@ function moving() {
     }
 
     if (key !== 0) {
-      newPositionIds = [...newPositionIds, snakePosition[key - 1]];
+      newPositionIds = [...newPositionIds, gameSettings.snakePosition[key - 1]];
     }
   });
 
-  snakePosition = newPositionIds;
+  gameSettings.snakePosition = newPositionIds;
 }
 
 const moveLeft = () => {
@@ -337,27 +336,30 @@ function detectKey(event) {
   }
 }
 
-document.addEventListener('touchstart', handleTouchStart, false);
-document.addEventListener('touchmove', handleTouchMove, false);
-
-var xDown = null;
-var yDown = null;
+let xDown = null;
+let yDown = null;
 
 function handleTouchStart(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
   xDown = event.changedTouches[0].clientX;
   yDown = event.changedTouches[0].clientY;
 }
 
 function handleTouchMove(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
   if (!xDown || !yDown) {
     return;
   }
 
-  var xUp = event.changedTouches[0].clientX;
-  var yUp = event.changedTouches[0].clientY;
+  const xUp = event.changedTouches[0].clientX;
+  const yUp = event.changedTouches[0].clientY;
 
-  var xDiff = xDown - xUp;
-  var yDiff = yDown - yUp;
+  const xDiff = xDown - xUp;
+  const yDiff = yDown - yUp;
 
   if (Math.abs(xDiff) > Math.abs(yDiff)) {
     if (xDiff > 0) {
@@ -396,7 +398,7 @@ function calcBoxSize() {
   styleDoc.setProperty('--boxHeight', boxSize + 'px');
 }
 
-window.addEventListener('resize', calcBoxSize);
+document.addEventListener('resize', calcBoxSize);
 
 function addFoodToPlayground(elementId) {
   const element = document.getElementById(elementId);
@@ -412,7 +414,7 @@ const generateFood = () => {
   let isCorrectId;
   do {
     foodId = randomIdgenerator();
-    isCorrectId = snakePosition.find(id => id === foodId);
+    isCorrectId = gameSettings.snakePosition.find(id => id === foodId);
   } while (isCorrectId);
 
   gameSettings.foodId = foodId;
@@ -429,15 +431,16 @@ const startAutoMove = () =>
   (autoMove = setInterval(() => moving(), gameSettings.gameSpeed));
 
 function startGame() {
-  snakePosition = [];
-  gameSettings.gameSpeed = 400;
   settings.classList.add('settings--hidden');
   pointsViewDiv.classList.remove('points-view--hidden');
-
   playGround.innerHTML = '';
-  gameSettings.actualDifficult = document.querySelector(
+
+  const selectedDifficult = document.querySelector(
     'input[name=difficulty]:checked'
   ).value;
+
+  gameSettings.actualDifficult = selectedDifficult;
+
   const playgroundSize = document.querySelector(
     '.settings__playground-size-select'
   ).value;
@@ -467,6 +470,9 @@ function startGame() {
   }
   generateFood();
   document.addEventListener('keydown', detectKey);
+  document.addEventListener('touchstart', handleTouchStart);
+  document.addEventListener('touchmove', handleTouchMove);
+
   startAutoMove();
 }
 
@@ -493,9 +499,10 @@ function endGame() {
   playGround.classList.add('snake__playground--hidden');
   clearInterval(autoMove);
   document.removeEventListener('keydown', detectKey);
+  document.removeEventListener('touchstart', handleTouchStart);
+  document.removeEventListener('touchmove', handleTouchMove);
   settings.classList.remove('settings--hidden');
-  gameSettings.points = 0;
+  gameSettings = Object.assign({}, defaultSettings);
+  changeHeadStyle();
   pointsCounterView.innerHTML = gameSettings.points;
-  actualDirector = defaultSetting.defaultDirector;
-  newDirector = actualDirector;
 }

@@ -28,6 +28,7 @@ body {
       -ms-flex-align: center;
           align-items: center;
   min-height: 100vh;
+  padding-top: 20px;
   background-image: radial-gradient(circle, #3c9d9b, #268998, #25748f, #305f81, #394a6d);
 }
 

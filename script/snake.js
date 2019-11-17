@@ -146,10 +146,10 @@ function calcBoxSize() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  let PERCENT_OF_USED_WINDOW = 0.85;
+  let PERCENT_OF_USED_WINDOW = 0.8;
 
   if (width <= 768) {
-    PERCENT_OF_USED_WINDOW = 0.95;
+    PERCENT_OF_USED_WINDOW = 0.9;
   }
 
   const smallerValue = width > height ? height : width;
@@ -473,7 +473,7 @@ function startGame() {
   generateFood();
   document.addEventListener('keydown', detectKey);
   document.addEventListener('touchstart', handleTouchStart, { passive: false });
-  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  document.addEventListener('touchend', handleTouchMove, { passive: false });
   window.scrollTo(0, 1);
   startAutoMove();
 }

@@ -23,6 +23,7 @@ const defaultSettings = {
   playgroundFullSize: 0,
   foodId: 0,
   gameSpeed: 400,
+  pointValue: 0,
   points: 0,
   startSnakeLenght: 4,
   playgroundBorderPositionsTop: [],
@@ -461,17 +462,21 @@ function startGame() {
 
   playGround.classList.remove('snake__playground--hidden');
 
+  gameSettings.pointValue = gameSettings.playgroundSize;
+
   if (gameSettings.actualDifficult === basicDifficults.Medium) {
     playGround.classList.add('snake__playground--medium');
+    gameSettings.pointValue = gameSettings.pointValue * 2;
   }
 
   if (gameSettings.actualDifficult === basicDifficults.Hard) {
     playGround.classList.add('snake__playground--hard');
+    gameSettings.pointValue = gameSettings.pointValue * 3;
   }
   generateFood();
   document.addEventListener('keydown', detectKey);
-  document.addEventListener('touchstart', handleTouchStart);
-  document.addEventListener('touchmove', handleTouchMove);
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
 
   startAutoMove();
 }
@@ -479,7 +484,7 @@ function startGame() {
 function removeFoodToPlayground() {
   const element = document.querySelector('.snake__food');
   element.remove();
-  gameSettings.points += 10;
+  gameSettings.points += gameSettings.pointValue;
   pointsCounterView.innerHTML = gameSettings.points;
   generateFood();
   if (gameSettings.gameSpeed !== 100) {

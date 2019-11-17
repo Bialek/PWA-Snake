@@ -362,11 +362,16 @@ let xDown = null;
 let yDown = null;
 
 function handleTouchStart(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
   xDown = event.changedTouches[0].clientX;
   yDown = event.changedTouches[0].clientY;
 }
 
 function handleTouchMove(event) {
+  event.preventDefault();
+  event.stopPropagation();
   if (!xDown || !yDown) {
     return;
   }
@@ -468,8 +473,8 @@ function startGame() {
   }
   generateFood();
   document.addEventListener('keydown', detectKey);
-  document.addEventListener('touchstart', handleTouchStart);
-  document.addEventListener('touchmove', handleTouchMove);
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
 
   startAutoMove();
 }

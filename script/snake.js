@@ -383,10 +383,10 @@ function calcBoxSize() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  let PERCENT_OF_USED_WINDOW = 0.75;
+  let PERCENT_OF_USED_WINDOW = 0.85;
 
   if (width <= 768) {
-    PERCENT_OF_USED_WINDOW = 0.85;
+    PERCENT_OF_USED_WINDOW = 0.95;
   }
 
   const smallerValue = width > height ? height : width;

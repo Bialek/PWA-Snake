@@ -117,9 +117,6 @@ body {
   width: 100%;
   -ms-flex-pack: distribute;
       justify-content: space-around;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
 }
 
 @media screen and (max-width: 768px) {
@@ -157,6 +154,9 @@ body {
   color: #ccc;
   border-color: #ccc;
   font-size: 1.5rem;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
 }
 
 .settings__input {

@@ -420,9 +420,20 @@ const generateFood = () => {
   addFoodToPlayground(foodId);
 };
 
-const startBtn = document.querySelector('.settings__btn');
+window.addEventListener('load', () => {
+  const startBtn = document.querySelector('.settings__btn');
 
-startBtn.addEventListener('click', startGame);
+  startBtn.addEventListener('click', startGame);
+
+  if ('serviceWorker' in navigator) {
+    try {
+      navigator.serviceWorker.register('serviceWorker.js');
+    } catch (error) {
+      console.log('Service Worker Registration Failed');
+    }
+  }
+});
+
 let autoMove = null;
 
 const startAutoMove = () =>

@@ -16,7 +16,7 @@
         <p>Points:</p>
         <p class="points-view__counter">0</p>
       </div>
-      <div class="settings">
+      <div class="settings hidden">
         <div class="settings__playground-size">
           <h4>Playground Size</h4>
           <select class="settings__playground-size-select">
@@ -42,7 +42,21 @@
             <input type="radio" name="difficulty" value="Hard" />
           </div>
         </div>
-        <button class="settings__btn">Start game</button>
+        <button class="button" id="start-btn">Start game</button>
+      </div>
+      <div class="menu">
+        <button class="menu__trigger hidden" id="menu-btn">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="menu__container" id="menu">
+          <button class="button hidden" id="return-btn">Return to game</button>
+          <button class="button" id="preparation-btn">Start game</button>
+          <button class="button" id="load-btn">Load game</button>
+          <button class="button" id="save-btn">Save game</button>
+          <button class="button hidden" id="exit-btn">exit</button>
+        </div>
       </div>
       <div class="snake__playground snake__playground--hidden"></div>
     </div>

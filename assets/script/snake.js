@@ -2,6 +2,10 @@ const playGround = document.querySelector('.snake__playground');
 const settings = document.querySelector('.settings');
 const pointsViewDiv = document.querySelector('.points-view');
 const pointsCounterView = document.querySelector('.points-view__counter');
+const menu = document.getElementById('menu');
+const returnBtn = document.getElementById('return-btn');
+const menuBtn = document.getElementById('menu-btn');
+const exitBtn = document.getElementById('exit-btn');
 const styleDoc = document.documentElement.style;
 
 let basicDirectors = {
@@ -32,6 +36,8 @@ const defaultSettings = {
   playgroundBorderPositionsRight: [],
   actualDirector: basicDirectors.left,
   newDirector: basicDirectors.left,
+  gameStarted: true,
+  gamePaused: true,
 };
 
 let gameSettings = Object.assign({}, defaultSettings);
@@ -420,18 +426,60 @@ const generateFood = () => {
   addFoodToPlayground(foodId);
 };
 
+function toggleVisibilityAddictionMenuBtn() {
+  exitBtn.classList.toggle('hidden');
+  returnBtn.classList.toggle('hidden');
+}
+
+function preparationGame() {
+  menu.classList.add('hidden');
+
+  settings.classList.remove('hidden');
+}
+
+function pauseGame() {
+  clearInterval(autoMove);
+  menuBtn.classList.add('hidden');
+  menu.classList.remove('hidden');
+
+  playGround.classList.add('snake__playground--hidden');
+
+  document.removeEventListener('keydown', detectKey);
+  document.removeEventListener('touchstart', handleTouchStart);
+  document.removeEventListener('touchend', handleTouchMove);
+}
+
+function returnGame() {
+  menu.classList.add('hidden');
+
+  playGround.classList.remove('snake__playground--hidden');
+  menuBtn.classList.remove('hidden');
+
+  document.addEventListener('keydown', detectKey);
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchend', handleTouchMove, { passive: false });
+  startAutoMove();
+}
+
 window.addEventListener('load', () => {
-  const startBtn = document.querySelector('.settings__btn');
+  const startBtn = document.getElementById('start-btn');
+  const loadBtn = document.getElementById('load-btn');
+  const saveBtn = document.getElementById('save-btn');
+  const preparationBtn = document.getElementById('preparation-btn');
 
   startBtn.addEventListener('click', startGame);
+  menuBtn.addEventListener('click', pauseGame);
+  preparationBtn.addEventListener('click', preparationGame);
+  returnBtn.addEventListener('click', returnGame);
+  exitBtn.addEventListener('click', endGame);
 
-  if ('serviceWorker' in navigator) {
-    try {
-      navigator.serviceWorker.register('serviceWorker.js');
-    } catch (error) {
-      console.log('Service Worker Registration Failed');
-    }
-  }
+  // if ('serviceWorker' in navigator) {
+  //   try {
+  //     navigator.serviceWorker.register('serviceWorker.js');
+  //   } catch (error) {
+  //     console.log('Service Worker Registration Failed');
+  //   }
+  // }
 });
 
 let autoMove = null;
@@ -440,7 +488,10 @@ const startAutoMove = () =>
   (autoMove = setInterval(() => moving(), gameSettings.gameSpeed));
 
 function startGame() {
-  settings.classList.add('settings--hidden');
+  settings.classList.add('hidden');
+  menuBtn.classList.remove('hidden');
+
+  toggleVisibilityAddictionMenuBtn();
   pointsViewDiv.classList.remove('points-view--hidden');
   playGround.innerHTML = '';
 
@@ -455,7 +506,6 @@ function startGame() {
   ).value;
 
   gameSettings.playgroundSize = parseInt(playgroundSize);
-
   basicDirectors = {
     ...basicDirectors,
     top: -playgroundSize,
@@ -509,12 +559,15 @@ function endGame() {
     'snake__playground--hard'
   );
   pointsViewDiv.classList.add('points-view--hidden');
-  playGround.classList.add('snake__playground--hidden');
   clearInterval(autoMove);
   document.removeEventListener('keydown', detectKey);
   document.removeEventListener('touchstart', handleTouchStart);
   document.removeEventListener('touchend', handleTouchMove);
-  settings.classList.remove('settings--hidden');
+  menuBtn.classList.add('hidden');
+  menu.classList.remove('hidden');
+  toggleVisibilityAddictionMenuBtn();
+  playGround.classList.add('snake__playground--hidden');
+
   gameSettings = Object.assign({}, defaultSettings);
   snakePosition.length = 0;
   changeHeadStyle();

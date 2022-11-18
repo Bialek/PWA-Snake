@@ -6,27 +6,45 @@ const STATIC_ASSETS = [
   './assets/saves/',
 ];
 
-self.addEventListener('install', installEvent => {
-  installEvent.waitUntil(
-    caches.open(staticDevCoffee).then(cache => {
-      cache.addAll(assets);
+const APP_PREFIX = 'Snake';
+const VERSION = '1.4';
+const CACHE_NAME = `${APP_PREFIX}_${VERSION}`;
+
+self.addEventListener('fetch', function (e) {
+  e.respondWith(
+    caches.match(e.request).then(function (request) {
+      if (request) {
+        return request;
+      } else {
+        return fetch(e.request);
+      }
     })
   );
 });
 
-self.addEventListener('fetch', fetchEvent => {
-  fetchEvent.respondWith(
-    caches.match(fetchEvent.request).then(res => {
-      return res || fetch(fetchEvent.request);
+self.addEventListener('install', function (e) {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(function (cache) {
+      return cache.addAll(STATIC_ASSETS);
     })
   );
 });
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker
-      .register('/serviceWorker.js')
-      .then(res => console.log('service worker registered'))
-      .catch(err => console.log('service worker not registered', err));
-  });
-}
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys().then(function (keyList) {
+      const cacheWhitelist = keyList.filter(function (key) {
+        return key.indexOf(APP_PREFIX);
+      });
+      cacheWhitelist.push(CACHE_NAME);
+
+      return Promise.all(
+        keyList.map(function (key, i) {
+          if (cacheWhitelist.indexOf(key) === -1) {
+            return caches.delete(keyList[i]);
+          }
+        })
+      );
+    })
+  );
+});

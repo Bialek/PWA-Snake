@@ -198,13 +198,15 @@ function moving() {
 
         case basicDirectors.right:
           {
-            const searchPositionId = gameSettings.playgroundBorderPositionsRight.find(
-              id => id === positionId
-            );
+            const searchPositionId =
+              gameSettings.playgroundBorderPositionsRight.find(
+                id => id === positionId
+              );
 
-            const searchNewPositionId = gameSettings.playgroundBorderPositionsLeft.find(
-              id => id === newFirstElementPosition
-            );
+            const searchNewPositionId =
+              gameSettings.playgroundBorderPositionsLeft.find(
+                id => id === newFirstElementPosition
+              );
 
             if (
               searchPositionId &&
@@ -238,13 +240,15 @@ function moving() {
 
         case basicDirectors.left:
           {
-            const searchPositionId = gameSettings.playgroundBorderPositionsLeft.find(
-              id => id === positionId
-            );
+            const searchPositionId =
+              gameSettings.playgroundBorderPositionsLeft.find(
+                id => id === positionId
+              );
 
-            const searchNewPositionId = gameSettings.playgroundBorderPositionsRight.find(
-              id => id === newFirstElementPosition
-            );
+            const searchNewPositionId =
+              gameSettings.playgroundBorderPositionsRight.find(
+                id => id === newFirstElementPosition
+              );
 
             if (
               (searchPositionId && searchNewPositionId) |
@@ -461,25 +465,31 @@ function returnGame() {
   startAutoMove();
 }
 
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  deferredPrompt = e;
+});
+
 window.addEventListener('load', () => {
   const startBtn = document.getElementById('start-btn');
-  const loadBtn = document.getElementById('load-btn');
-  const saveBtn = document.getElementById('save-btn');
   const preparationBtn = document.getElementById('preparation-btn');
+
+  const installApp = document.getElementById('install-btn');
+  installApp.addEventListener('click', async () => {
+    if (deferredPrompt !== null) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        deferredPrompt = null;
+      }
+    }
+  });
 
   startBtn.addEventListener('click', startGame);
   menuBtn.addEventListener('click', pauseGame);
   preparationBtn.addEventListener('click', preparationGame);
   returnBtn.addEventListener('click', returnGame);
   exitBtn.addEventListener('click', endGame);
-
-  // if ('serviceWorker' in navigator) {
-  //   try {
-  //     navigator.serviceWorker.register('serviceWorker.js');
-  //   } catch (error) {
-  //     console.log('Service Worker Registration Failed');
-  //   }
-  // }
 });
 
 let autoMove = null;

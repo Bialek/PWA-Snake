@@ -1,9 +1,8 @@
 const STATIC_ASSETS = [
-  './',
-  './assets/style/style.css',
-  './assets/style/style.css.map',
-  './assets/script/snake.js',
-  './assets/saves/',
+  '/PWA-Snake/',
+  '/PWA-Snake/assets/style/style.css',
+  '/PWA-Snake/assets/style/style.css.map',
+  '/PWA-Snake/assets/script/snake.js',
 ];
 
 const APP_PREFIX = 'Snake';

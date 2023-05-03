@@ -4,7 +4,7 @@
   "theme_color": "#394a6d",
   "background_color": "#394a6d",
   "display": "standalone",
-  "start_url": "/",
+  "start_url": "/PWA-Snake/",
   "orientation": "portrait-primary",
   "icons": [
     {

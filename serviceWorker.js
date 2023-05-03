@@ -7,7 +7,7 @@ const STATIC_ASSETS = [
 ];
 
 const APP_PREFIX = 'Snake';
-const VERSION = '1.5';
+const VERSION = '1.6';
 const CACHE_NAME = `${APP_PREFIX}_${VERSION}`;
 
 self.addEventListener('install', event => {

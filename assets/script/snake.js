@@ -465,25 +465,25 @@ function returnGame() {
   startAutoMove();
 }
 
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  deferredPrompt = e;
-});
+// let deferredPrompt;
+// window.addEventListener('beforeinstallprompt', e => {
+//   deferredPrompt = e;
+// });
 
 window.addEventListener('load', () => {
   const startBtn = document.getElementById('start-btn');
   const preparationBtn = document.getElementById('preparation-btn');
 
-  const installApp = document.getElementById('install-btn');
-  installApp.addEventListener('click', async () => {
-    if (deferredPrompt !== null) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        deferredPrompt = null;
-      }
-    }
-  });
+  // const installApp = document.getElementById('install-btn');
+  // installApp.addEventListener('click', async () => {
+  //   if (deferredPrompt !== null) {
+  //     deferredPrompt.prompt();
+  //     const { outcome } = await deferredPrompt.userChoice;
+  //     if (outcome === 'accepted') {
+  //       deferredPrompt = null;
+  //     }
+  //   }
+  // });
 
   startBtn.addEventListener('click', startGame);
   menuBtn.addEventListener('click', pauseGame);

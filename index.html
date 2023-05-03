@@ -64,20 +64,25 @@
         <div class="menu__container" id="menu">
           <button class="button hidden" id="return-btn">Return to game</button>
           <button class="button" id="preparation-btn">Start game</button>
-          <button class="button" id="install-btn">Install</button>
+          <!-- <button class="button" id="install-btn">Install</button> -->
           <button class="button hidden" id="exit-btn">exit</button>
         </div>
       </div>
       <div class="snake__playground snake__playground--hidden"></div>
     </div>
     <script>
-      if (navigator.serviceWorker) {
-        navigator.serviceWorker.register('/PWA-Snake/serviceWorker.js', {
-          scope: '/PWA-Snake/',
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('/PWA-Snake/serviceWorker.js', {
+              scope: '/PWA-Snake/',
+            })
+            .then(registration => console.log('Service Worker registered'))
+            .catch(error =>
+              console.log('Service Worker registration failed:', error)
+            );
         });
       }
-
-      // --- Application code here ---
     </script>
     <script src="./assets/script/snake.js"></script>
   </body>

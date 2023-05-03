@@ -1,7 +1,5 @@
 const STATIC_ASSETS = [
   '/PWA-Snake/',
-  '/PWA-Snake/assets/',
-  '/PWA-Snake/assets/icons/',
   '/PWA-Snake/assets/style/style.css',
   '/PWA-Snake/assets/script/snake.js',
 ];
